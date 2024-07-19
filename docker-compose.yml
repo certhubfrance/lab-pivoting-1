@@ -1,0 +1,190 @@
+version: '3'
+
+services:
+  # ATTACKER-PC
+  attacker_pc:
+    image: certhubfrance/pivoting-lab-attacker_pc:latest
+    container_name: Attacker-PC
+    hostname: Attacker-PC
+    ports:
+      #- "5900:5900"
+      - "2222:22"
+      - "6080:6080"
+    entrypoint: /bin/bash -c /root/start.sh
+    networks:
+      network_a:
+        ipv4_address: 192.168.10.2
+    cap_add:
+      - NET_ADMIN
+
+  # JERRY-PC
+  jerry_pc:
+    image: certhubfrance/pivoting-lab-jerry_pc:latest
+    container_name: Jerry-PC
+    hostname: Jerry-PC
+    ports:
+      - "2200:22"
+      - "8000:8000"
+    command: /bin/bash -c "/usr/sbin/sshd -D && /bin/bash"
+    networks:
+      network_a:
+        ipv4_address: 192.168.10.3
+      network_b:
+        ipv4_address: 192.168.11.2
+    cap_add:
+      - NET_ADMIN
+
+  # WEBSERVER
+  webserver:
+    image: certhubfrance/pivoting-lab-webserver:latest
+    container_name: Webserver
+    hostname: Webserver
+    #ports:
+    #  - "8080:80"
+    command: /bin/bash -c "service apache2 start && /usr/sbin/sshd -D && /bin/bash"
+    networks:
+      network_b:
+        ipv4_address: 192.168.11.3
+      network_c:
+        ipv4_address: 192.168.12.2
+      network_d:
+        ipv4_address: 192.168.13.2
+    cap_add:
+      - NET_ADMIN
+
+  # SUMMER-PC
+  summer_pc:
+    image: certhubfrance/pivoting-lab-summer_pc:latest
+    container_name: Summer-PC
+    hostname: Summer-PC
+    command: /bin/bash -c "/usr/sbin/sshd -D && /bin/bash"
+    networks:
+      network_c:
+        ipv4_address: 192.168.12.3
+    cap_add:
+      - NET_ADMIN
+
+  # BETH-PC
+  beth_pc:
+    image: certhubfrance/pivoting-lab-beth_pc:latest
+    container_name: Beth-PC
+    hostname: Beth-PC
+    command: /bin/bash -c "/usr/sbin/sshd -D && /bin/bash"
+    networks:
+      network_c:
+        ipv4_address: 192.168.12.4
+    cap_add:
+      - NET_ADMIN
+
+  # SPACEBETH-PC
+  spacebeth_pc:
+    image: certhubfrance/pivoting-lab-spacebeth_pc:latest
+    container_name: SpaceBeth-PC
+    hostname: SpaceBeth-PC
+    command: /bin/bash -c "/usr/sbin/sshd -D && /bin/bash"
+    networks:
+      network_c:
+        ipv4_address: 192.168.12.5
+    cap_add:
+      - NET_ADMIN
+
+  # SERVER51
+  server51:
+    image: certhubfrance/pivoting-lab-server51:latest
+    container_name: Server51
+    hostname: Server51
+    #ports:
+    #  - "8080:80"
+    entrypoint: /bin/bash -c /root/start.sh
+    networks:
+      network_d:
+        ipv4_address: 192.168.13.3
+      network_e:
+        ipv4_address: 192.168.14.2
+    cap_add:
+      - NET_ADMIN
+
+  # BIRDPERSON_PC
+  birdperson_pc:
+    image: certhubfrance/pivoting-lab-birdperson_pc:latest
+    container_name: Birdperson-PC
+    hostname: Birdperson-PC
+    command: /bin/bash -c "/usr/sbin/sshd -D && /bin/bash"
+    networks:
+      network_e:
+        ipv4_address: 192.168.14.3
+    cap_add:
+      - NET_ADMIN
+
+  # MORTY-PC
+  morty_pc:
+    image: certhubfrance/pivoting-lab-morty_pc:latest
+    container_name: Morty-PC
+    hostname: Morty-PC
+    command: /bin/bash -c "/usr/sbin/sshd -D && /bin/bash"
+    networks:
+      network_e:
+        ipv4_address: 192.168.14.4
+      network_f:
+        ipv4_address: 192.168.100.2
+    cap_add:
+      - NET_ADMIN
+
+  # RICK-PC
+  rick_pc:
+    image: certhubfrance/pivoting-lab-rick_pc:latest
+    container_name: Rick-PC
+    hostname: Rick-PC
+    command: /bin/bash -c "/usr/sbin/sshd -D && /bin/bash"
+    networks:
+      network_f:
+        ipv4_address: 192.168.100.50
+    cap_add:
+      - NET_ADMIN
+
+
+# Networks
+networks:
+  network_a:
+    driver: bridge
+    driver_opts:
+          parent: home
+    ipam:
+      config:
+        - subnet: 192.168.10.0/24
+    internal: true
+
+  network_b:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.11.0/24
+    # internal: true
+
+  network_c:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.12.0/24
+    # internal: true
+
+  network_d:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.13.0/24
+    # internal: true
+
+  network_e:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.14.0/24
+    # internal: true
+
+  network_f:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.100.0/24
+    # internal: true
