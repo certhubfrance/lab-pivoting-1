@@ -1,22 +1,6 @@
 version: '3'
 
 services:
-  # ATTACKER-PC
-  attacker_pc:
-    image: certhubfrance/pivoting-lab-attacker_pc:latest
-    container_name: Attacker-PC
-    hostname: Attacker-PC
-    ports:
-      #- "5900:5900"
-      - "2222:22"
-      - "6080:6080"
-    entrypoint: /bin/bash -c /root/start.sh
-    networks:
-      network_a:
-        ipv4_address: 192.168.10.2
-    cap_add:
-      - NET_ADMIN
-
   # JERRY-PC
   jerry_pc:
     image: certhubfrance/pivoting-lab-jerry_pc:latest
@@ -33,6 +17,22 @@ services:
         ipv4_address: 192.168.11.2
     cap_add:
       - NET_ADMIN
+
+  # ATTACKER-PC
+  attacker_pc:
+    image: certhubfrance/pivoting-lab-attacker_pc:latest
+    container_name: Attacker-PC
+    hostname: Attacker-PC
+    entrypoint: ["/bin/bash", "/root/start.sh"]
+    restart: always
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - 0.0.0.0:2222:22
+      - 0.0.0.0:5900:5900
+    networks:
+      network_a:
+        ipv4_address: 192.168.10.2
 
   # WEBSERVER
   webserver:
@@ -147,12 +147,10 @@ services:
 networks:
   network_a:
     driver: bridge
-    driver_opts:
-          parent: home
     ipam:
       config:
         - subnet: 192.168.10.0/24
-    internal: true
+    # internal: true
 
   network_b:
     driver: bridge
