@@ -11,7 +11,7 @@ services:
       - "8000:8000"
     command: /bin/bash -c "/usr/sbin/sshd -D && /bin/bash"
     networks:
-      network_a:
+      network_initial:
         ipv4_address: 192.168.10.3
       network_b:
         ipv4_address: 192.168.11.2
@@ -31,7 +31,7 @@ services:
       - 0.0.0.0:2222:22
       - 0.0.0.0:5900:5900
     networks:
-      network_a:
+      network_initial:
         ipv4_address: 192.168.10.2
 
   # WEBSERVER
@@ -145,7 +145,7 @@ services:
 
 # Networks
 networks:
-  network_a:
+  network_initial:
     driver: bridge
     ipam:
       config:
